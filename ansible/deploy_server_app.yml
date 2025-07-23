@@ -163,7 +163,7 @@
 
     - name: Clone app from GitHub
       git:
-        repo: git@github.com:OptimaLPro/FinalProject-DevOps.git
+        repo: git@github.com:orbachoror/FinalProject-DevOps.git
         dest: /opt/app
         version: main
         key_file: /home/ubuntu/.ssh/id_rsa
