@@ -20,7 +20,14 @@ conda activate selenium_tests
 pip install -r requirements.txt
 ```
 
-Run:
+Run App:
+
+```bash
+npm i
+npm run dev
+````
+
+Run (in new Terminal):
 
 ```bash
 cd selenium
@@ -32,16 +39,17 @@ pytest test.py
 > * macOS: `localServices/chromedriver-mac-x64/chromedriver`
 > * Windows: `localServices/chromedriver-win64/chromedriver.exe`
 
-Verbose - axtra prints
+Run Verbose - axtra prints
 
 ```bash
 cd selenium
 pytest -v test.py
 
 ```
+------------
 ### Headless (for CI / GitHub Actions) - no browser usage.
 
-Run:
+Run Headless:
 
 ```bash
 cd selenium
@@ -51,7 +59,7 @@ pytest -v testHeadless.py
 > No need to set the ChromeDriver path (uses `webdriver_manager`).
 
 
-name: Selenium Tests
+------------
 
 ### Git workflow .yaml usage
 
