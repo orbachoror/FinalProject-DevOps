@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 ansible/group_vars/docker.env
 docker.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+selenium/__pycache__/
+selenium/reports/
