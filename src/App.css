@@ -1,0 +1,359 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: linear-gradient( 132.6deg,  rgba(71,139,214,1) 23.3%, rgba(37,216,211,1) 84.7% );
+  min-height: 100vh;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Header */
+.header {
+  margin-bottom: 30px;
+}
+
+.current-date {
+  color: #555;
+}
+
+.date {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.time {
+  font-size: 1rem;
+  opacity: 0.8;
+  font-family: 'Courier New', monospace;
+}
+
+/* Religion Selector */
+.religion-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  justify-content: center;
+}
+.religion-btn-active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 15px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 80px;
+  font-size: 0.9rem;
+  border-color: rgba(71,139,214,1) !important;
+  background-image: linear-gradient( 132.6deg,  rgba(71,139,214,1) 23.3%, rgba(37,216,211,1) 84.7% ) !important;
+  color: white !important;
+}
+
+.religion-btn-unactive {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 15px 20px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 80px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+
+.religion-btn .emoji {
+  font-size: 1.5rem;
+}
+
+.religion-btn .label {
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+/* Holiday Selector */
+.holiday-selector {
+  margin-bottom: 35px;
+}
+
+.holiday-select {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+  color: #333;
+}
+
+.holiday-select:focus {
+  outline: none;
+  border-color: rgba(71,139,214,1);
+  box-shadow: 0 0 0 3px rgba(71, 139, 214, 0.1);
+}
+
+.holiday-select option {
+  color: #333;
+  background: white;
+}
+
+/* Counter Container */
+.counter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Circular Progress */
+.circular-progress {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.countdown-number {
+  font-size: 3rem;
+  font-weight: 700;
+  background-image: linear-gradient( 132.6deg,  rgba(71,139,214,1) 23.3%, rgba(37,216,211,1) 84.7% );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  letter-spacing: 2px;
+  margin-top: 5px;
+}
+
+/* Holiday Info */
+.holiday-info {
+  text-align: center;
+}
+
+.holiday-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background-image: linear-gradient( 132.6deg,  rgba(71,139,214,1) 23.3%, rgba(37,216,211,1) 84.7% );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.holiday-date {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Detailed Countdown */
+.detailed-countdown {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+.time-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.time-unit .number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  background-image: linear-gradient( 68.3deg, rgba(245,177,97,1) 0.4%, rgba(236,54,110,1) 100.2% );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.time-unit .label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .religion-selector {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .religion-btn {
+    flex-direction: row;
+    justify-content: center;
+    min-width: auto;
+    width: 100%;
+  }
+
+  .countdown-number {
+    font-size: 2.5rem;
+  }
+
+  .holiday-name {
+    font-size: 1.5rem;
+  }
+
+  .detailed-countdown {
+    gap: 20px;
+  }
+
+  .time-unit .number {
+    font-size: 1.5rem;
+  }
+
+  .date {
+    font-size: 1.1rem;
+  }
+
+  .time {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 25px 15px;
+  }
+
+  .detailed-countdown {
+    gap: 15px;
+  }
+
+  .time-unit .number {
+    font-size: 1.3rem;
+  }
+
+  .countdown-number {
+    font-size: 2rem;
+  }
+
+  .holiday-name {
+    font-size: 1.3rem;
+  }
+
+  .religion-btn .emoji {
+    font-size: 1.3rem;
+  }
+
+  .religion-btn .label {
+    font-size: 0.75rem;
+  }
+}
+
+/* Animations */
+.circular-progress {
+  animation: fadeIn 0.8s ease-in;
+}
+
+.counter-container {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Progress circle animation - removed to prevent flickering */
+.progress-ring circle:last-child {
+  /* Transition is now handled inline in the component */
+}
