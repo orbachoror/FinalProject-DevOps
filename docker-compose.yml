@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  web:
+    container_name: pass_gen
+    image: iyarh/pass_gen:latest
+    environment:
+      - NODE_ENV=prod
+    ports:
+      - "80:3000"
