@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # accept manual trigger
     inputs:
       confirm_deploy:
-        description: 'Type "DEPLOY" to confirm server deployment'
+        description: 'server deployment'
         required: true
         default: 'NO' 
 
@@ -16,14 +16,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Confirm Deployment
-        run: |
-          if [ "${{ github.event.inputs.confirm_deploy }}" != "DEPLOY" ];
-            then echo " Deployment cancelled - you must type 'DEPLOY' to confirm"
-            exit 1
-          fi
-          echo " Deployment confirmed - proceeding..."
-
       - uses: actions/checkout@v3
 
       - name: Set up Node
