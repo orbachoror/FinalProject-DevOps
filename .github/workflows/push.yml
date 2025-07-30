@@ -1,4 +1,4 @@
-name: 🧪 Full Test: Deploy to AWS with Selenium
+name: Deploy to AWS with Tests
 
 on:
   push:
