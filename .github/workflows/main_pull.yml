@@ -15,7 +15,7 @@ jobs:
         run: docker build --tag myapp .       
       
       - name: Run Docker container
-        run: docker run -d --name app -p 4173:3000 myapp
+        run: docker run -d --name app -p 4173:80 myapp
       
       - name: Wait for app to start
         run: |
@@ -38,7 +38,7 @@ jobs:
       - name: Update Selenium config for CI
         run: |
           cd selenium
-          echo '{"url": "http://35.156.207.61", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
+          echo '{"url": "http://localhost:4173", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
       
       - name: Run Selenium Tests
         run: |
