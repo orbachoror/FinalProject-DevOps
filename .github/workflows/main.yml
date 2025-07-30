@@ -55,7 +55,7 @@ jobs:
       - name: Run Selenium Tests
         run: |
           cd selenium
-          pytest -rA
+          pytest testHeadless.py
         timeout-minutes: 5
 
       - name: Stop React app

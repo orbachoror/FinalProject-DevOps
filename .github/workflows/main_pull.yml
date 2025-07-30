@@ -2,7 +2,7 @@ name: Test Pull Request with Docker and Selenium
 
 on:
   pull_request:
-    branches: [ main, orbach/gitHub-WorkFlows ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,42 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
       - name: Build Docker image
-        run: docker build --tag myapp .       
-      
+        run: docker build --tag myapp .            
       - name: Run Docker container
-        run: docker run -d --name app -p 4173:80 myapp
-      
+        run: docker run -d --name app -p 4173:80 myapp  
       - name: Wait for app to start
         run: |
           timeout 60 bash -c 'until curl -f http://localhost:4173; do sleep 2; done'
-          echo "App is running!"
-      
+          echo "App is running!" 
       - name: Set up Python for Selenium
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'          
-    
       - name: Install Selenium dependencies
         run: |
           cd selenium
           pip install -r requirements.txt
-      
       - name: Setup Chrome for Selenium
         uses: browser-actions/setup-chrome@latest
-      
       - name: Update Selenium config for CI
         run: |
           cd selenium
           echo '{"url": "http://localhost:4173", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
-      
       - name: Run Selenium Tests
         run: |
           cd selenium
-          python testHeadless.py
+          pytest testHeadless.py
         timeout-minutes: 5
-      
+
       - name: Stop and cleanup Docker container
         run: |
           docker stop app || true
