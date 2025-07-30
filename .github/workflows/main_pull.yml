@@ -1,63 +1,54 @@
-name:  Pull Request Tests
+name: Test Pull Request with Docker and Selenium
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main, orbach/gitHub-WorkFlows ]
+  workflow_dispatch:
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Run linting
-        run: npm run lint
-
-      - name: Start React app for testing
-        run: npm run preview &
-        env:
-          CI: true
-
+      
+      - name: Build Docker image
+        run: docker build --tag myapp .       
+      
+      - name: Run Docker container
+        run: docker run -d --name app -p 4173:3000 myapp
+      
       - name: Wait for app to start
         run: |
           timeout 60 bash -c 'until curl -f http://localhost:4173; do sleep 2; done'
           echo "App is running!"
-
+      
       - name: Set up Python for Selenium
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
-
+          python-version: '3.x'          
+    
       - name: Install Selenium dependencies
         run: |
           cd selenium
           pip install -r requirements.txt
-
+      
       - name: Setup Chrome for Selenium
         uses: browser-actions/setup-chrome@latest
-
+      
       - name: Update Selenium config for CI
         run: |
           cd selenium
           echo '{"url": "http://localhost:4173", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
-
+      
       - name: Run Selenium Tests
         run: |
           cd selenium
           python testHeadless.py
         timeout-minutes: 5
+      
+      - name: Stop and cleanup Docker container
+        run: |
+          docker stop app || true
+          docker rm app || true
+          docker rmi myapp || true
 
-      - name: Stop React app
-        run: pkill -f "vite preview" || true

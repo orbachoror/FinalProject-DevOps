@@ -30,3 +30,6 @@ __pycache__/
 *.pyd
 selenium/__pycache__/
 selenium/reports/
+
+ansible/group_vars/docker.env
+docker.env
