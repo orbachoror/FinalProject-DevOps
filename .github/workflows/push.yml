@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # אפשרות להפעיל ידנית
+  workflow_dispatch: 
 
 jobs:
   deploy:
@@ -23,7 +23,40 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Set up Python
+      - name: Start React app for testing
+        run: npm run preview &
+        env:
+          CI: true
+
+      - name: Wait for app to start
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:4173; do sleep 2; done'
+          echo "App is running!"
+
+      - name: Set up Python for Selenium
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Selenium dependencies
+        run: |
+          cd selenium
+          pip install -r requirements.txt
+
+      - name: Setup Chrome for Selenium
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Update Selenium config for CI
+        run: |
+          cd selenium
+          echo '{"url": "http://localhost:4173", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
+
+      - name: Run Selenium Tests
+        run: |
+          cd selenium
+          python testHeadless.py
+
+      - name: Set up Python for Ansible
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
