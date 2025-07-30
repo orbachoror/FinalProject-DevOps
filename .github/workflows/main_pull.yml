@@ -15,7 +15,7 @@ jobs:
       - name: Build Docker image
         run: docker build --tag myapp .            
       - name: Run Docker container
-        run: docker run -d --name app -p 5173:80 myapp  
+        run: docker run -d --name app -p 80:5173 myapp  
       - name: Set up Python for Selenium
         uses: actions/setup-python@v4
         with:
