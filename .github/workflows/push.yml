@@ -3,7 +3,8 @@ name: Deploy to AWS with Tests
 on:
   push:
     branches:
-      - main
+      # - main
+        - orbach/gitHub-WorkFlows
   workflow_dispatch: # accept manual trigger
     inputs:
       confirm_deploy:
