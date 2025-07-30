@@ -1,4 +1,4 @@
-name: Test Pull Request with Docker and Selenium
+name: Pull Request with Docker and Selenium
 
 on:
   pull_request:
@@ -6,32 +6,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Build Docker image
         run: docker build --tag myapp .            
       - name: Run Docker container
-        run: docker run -d --name app -p 4173:80 myapp  
-      - name: Wait for app to start
-        run: |
-          timeout 60 bash -c 'until curl -f http://localhost:4173; do sleep 2; done'
-          echo "App is running!" 
+        run: docker run -d --name app -p 5173:80 myapp  
       - name: Set up Python for Selenium
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'          
+          python-version: '3.9'          
       - name: Install Selenium dependencies
         run: |
           cd selenium
           pip install -r requirements.txt
-      - name: Setup Chrome for Selenium
-        uses: browser-actions/setup-chrome@latest
-      - name: Update Selenium config for CI
-        run: |
-          cd selenium
-          echo '{"url": "http://localhost:4173", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
+      - name: Install software
+        run: sudo apt-get install -y chromium-browser
       - name: Run Selenium Tests
         run: |
           cd selenium
