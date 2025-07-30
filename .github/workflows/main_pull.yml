@@ -38,7 +38,7 @@ jobs:
       - name: Update Selenium config for CI
         run: |
           cd selenium
-          echo '{"url": "http://localhost:4173", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
+          echo '{"url": "http://35.156.207.61", "holiday_types": ["jewish", "muslim", "christian"]}' > config.json
       
       - name: Run Selenium Tests
         run: |
