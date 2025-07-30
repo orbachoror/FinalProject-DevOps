@@ -1,9 +1,8 @@
-version: "3.3"
+version: "3.8"
+
 services:
   web:
-    container_name: pass_gen
-    image: iyarh/pass_gen:latest
-    environment:
-      - NODE_ENV=prod
+    container_name: holidayscounter
+    build: .
     ports:
-      - "80:3000"
+      - "80:80"
