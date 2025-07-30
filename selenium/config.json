@@ -1,4 +1,4 @@
 {
-  "url": "http://localhost:5173",
+  "url": "http://localhost:80",
 "holiday_types": ["jewish", "muslim", "christian"]
 }
