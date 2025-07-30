@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # אפשרות להפעיל ידנית
 
 jobs:
   deploy:
@@ -22,21 +23,31 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      # התקנת Python + Ansible
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install Ansible
-        run: pip install ansible boto boto3 botocore
+        run: |
+          pip install ansible boto boto3 botocore
+          ansible-galaxy collection install amazon.aws
 
-      # הרצת Playbook
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
       - name: Run Ansible Playbook
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
         run: |
-          ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --ssh-common-args='-o StrictHostKeyChecking=no'
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ansible-playbook ansible/deploy_server_app.yml --ssh-common-args='-o StrictHostKeyChecking=no' \
+            -e "docker_user=${{ secrets.DOCKER_USER }}" \
+            -e "docker_token=${{ secrets.DOCKER_TOKEN }}"
