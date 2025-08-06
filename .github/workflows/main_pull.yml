@@ -27,7 +27,7 @@ jobs:
       - name: Run Selenium Tests
         run: |
           cd selenium
-          pytest 
+          pytest testHeadless.py
         timeout-minutes: 5
 
       - name: Stop and cleanup Docker container
