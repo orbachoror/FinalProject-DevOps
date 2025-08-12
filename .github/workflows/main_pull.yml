@@ -11,23 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build Docker image
-        run: docker build --tag myapp .            
+        run: docker build --tag myapp .   
+
       - name: Run Docker container
         run: docker run -d --name app -p 80:5173 myapp  
+
       - name: Set up Python for Selenium
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'          
+
       - name: Install Selenium dependencies
         run: |
           cd selenium
           pip install -r requirements.txt
+
       - name: Install software
         run: sudo apt-get install -y chromium-browser
+        
       - name: Run Selenium Tests
         run: |
           cd selenium
-          pytest testHeadless.py
+          pytest -v testHeadless.py
         timeout-minutes: 5
 
       - name: Stop and cleanup Docker container
