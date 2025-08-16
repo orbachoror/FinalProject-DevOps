@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from datetime import datetime          # ← NEW
+from datetime import datetime     
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -10,11 +10,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 options.add_argument("--no-sandbox")
-options.add_argument("--headless")                # Headless mode
-options.add_argument("--disable-gpu")             # For Windows, often required
-options.add_argument("--window-size=1400,2100")   # Ensure elements aren't off-screen
+options.add_argument("--headless")                
+options.add_argument("--disable-gpu")            
+options.add_argument("--window-size=1400,2100")   
 
-# Use webdriver_manager to get the right ChromeDriver
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(options=options, service=service)
 
@@ -65,10 +64,9 @@ def test_clock_counter_accurate():
             driver.find_element(By.ID, f"religion-{rel}").click()
             time.sleep(1)
             page_time = driver.find_element(By.ID, "time-string").text
-            now_24h = datetime.now().strftime("%H")      # '00' at midnight, '13' at 1pm
-            now_12h = datetime.now().strftime("%I")      # '12' at midnight/noon, '01'-'11' otherwise
+            now_12h = datetime.now().strftime("%I")      
             if now_12h.startswith("0"):
-                now_12h = now_12h[1:]                    # remove leading zero
+                now_12h = now_12h[1:]                    
             assert (now_12h in page_time), f"Expected hour {now_12h} in '{page_time}'"
         except Exception as e:
             print(f"Clock not accurate for {rel}: {e}")
@@ -94,9 +92,10 @@ def test_next_holiday_is_selected_by_default():
             time.sleep(1)
             select = driver.find_element(By.ID, "holiday-select")
             selected_option = select.find_element(By.CSS_SELECTOR, "option:checked")
-            assert selected_option.get_attribute("value") == "next"
+            assert selected_option.get_attribute("value") != ""
+            assert not selected_option.get_attribute("disabled")
         except:
-            print(f"Next holiday is not the default selected in dropdown for {rel}")
+            print(f"Real next holiday is not properly selected by default in dropdown for {rel}")
             driver.quit()
             exit(1)
 
@@ -107,19 +106,22 @@ def test_select_next_holiday_and_match_counter():
             time.sleep(1)
             wait_for_holiday_loaded()
             select = driver.find_element(By.ID, "holiday-select")
+            selected_option = select.find_element(By.CSS_SELECTOR, "option:checked")
+            days_default = driver.find_element(By.ID, "countdown-days").text
+            
             options = select.find_elements(By.TAG_NAME, "option")
             for opt in options:
-                if opt.get_attribute("value") != "next" and not opt.get_attribute("disabled"):
-                    value = opt.get_attribute("value")
-                    days_default = driver.find_element(By.ID, "countdown-days").text
+                if (opt.get_attribute("value") != selected_option.get_attribute("value") and 
+                    not opt.get_attribute("disabled")):
                     opt.click()
-                    select.send_keys(value)
                     time.sleep(1)
-                    days_now = driver.find_element(By.ID, "countdown-days").text
-                    assert days_default == days_now
+                    selected_option.click()
+                    time.sleep(1)
+                    days_back = driver.find_element(By.ID, "countdown-days").text
+                    assert days_back == days_default
                     break
         except:
-            print(f"Failed to match counter for next holiday after select for {rel}")
+            print(f"Failed to test holiday selection and counter update for {rel}")
             driver.quit()
             exit(1)
 
@@ -131,20 +133,24 @@ def test_select_second_holiday_and_update():
             wait_for_holiday_loaded()
             select = driver.find_element(By.ID, "holiday-select")
             options = [opt for opt in select.find_elements(By.TAG_NAME, "option")
-                       if not opt.get_attribute("disabled") and opt.get_attribute("value") != "next"]
+                       if not opt.get_attribute("disabled")]
             if len(options) < 2:
-                print(f"Not enough holidays to test second next holiday for {rel}")
+                print(f"Not enough holidays to test second holiday for {rel}")
                 continue
-            value = options[1].get_attribute("value")
-            days_before = driver.find_element(By.ID, "countdown-days").text
-            options[1].click()
-            select.send_keys(value)
-            time.sleep(1)
-            name_now = driver.find_element(By.ID, "holiday-name").text
-            days_now = driver.find_element(By.ID, "countdown-days").text
-            assert days_now != days_before or name_now != options[0].get_attribute("value")
+            
+            initial_name = driver.find_element(By.ID, "holiday-name").text
+            initial_days = driver.find_element(By.ID, "countdown-days").text
+            
+            for opt in options:
+                if opt.get_attribute("value") != options[0].get_attribute("value"):
+                    opt.click()
+                    time.sleep(1)
+                    new_name = driver.find_element(By.ID, "holiday-name").text
+                    new_days = driver.find_element(By.ID, "countdown-days").text
+                    assert new_name != initial_name or new_days != initial_days
+                    break
         except:
-            print(f"Failed to change to second next holiday for {rel}")
+            print(f"Failed to change to different holiday for {rel}")
             driver.quit()
             exit(1)
 
@@ -183,13 +189,12 @@ def test_manual_counter_calculation():
             wait_for_holiday_loaded()
             select = driver.find_element(By.ID, "holiday-select")
             options = [opt for opt in select.find_elements(By.TAG_NAME, "option")
-                       if not opt.get_attribute("disabled") and opt.get_attribute("value") != "next"]
+                       if not opt.get_attribute("disabled")]
             if not options:
                 print(f"No holidays to test counter calculation for {rel}")
                 continue
             value = options[0].get_attribute("value")
             options[0].click()
-            select.send_keys(value)
             time.sleep(1)
             holiday_name = driver.find_element(By.ID, "holiday-name").text
 
@@ -216,7 +221,6 @@ def test_manual_counter_calculation():
             print(f"Manual counter calculation failed for {rel}: {e}")
             driver.quit()
             exit(1)
-
 
 def test_quit():
     driver.quit()

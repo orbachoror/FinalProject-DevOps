@@ -4,7 +4,7 @@ import './App.css'
 function App() {
   const [holidaysData, setHolidaysData] = useState(null)
   const [selectedReligion, setSelectedReligion] = useState('jewish')
-  const [selectedHoliday, setSelectedHoliday] = useState('next')
+  const [selectedHoliday, setSelectedHoliday] = useState('')
   const [currentDate, setCurrentDate] = useState(new Date())
   const [timeRemaining, setTimeRemaining] = useState({
     days: 0,
@@ -16,14 +16,30 @@ function App() {
   })
   const [currentHoliday, setCurrentHoliday] = useState(null)
 
-  // Load holidays data and initialize stable values
+  const findNextHoliday = (holidays, currentDate) => {
+    if (!holidays || holidays.length === 0) return null
+    
+    const nextHoliday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.start)
+      return holidayDate > currentDate
+    })
+    
+    return nextHoliday || holidays[0]
+  }
+
   useEffect(() => {
     fetch('/holidays2025.json')
-    // code mistake example - missed parse step
+    // CODE MISTAKE EXAMPLE - missed parse step
+   // .then(response => response)
       .then(response => response.json())
-      // .then(response => response)
       .then(data => {
         setHolidaysData(data)
+        const now = new Date()
+        const defaultHolidays = data[selectedReligion] || []
+        const nextHoliday = findNextHoliday(defaultHolidays, now)
+        if (nextHoliday) {
+          setSelectedHoliday(nextHoliday.name)
+        }
       })
       .catch(error => console.error('Error loading holidays:', error))
   }, [])
@@ -34,18 +50,8 @@ function App() {
       setCurrentDate(now)
       if (holidaysData) {
         const holidays = holidaysData[selectedReligion] || []
-        let targetHoliday = null
-        if (selectedHoliday === 'next') {
-          targetHoliday = holidays.find(holiday => {
-            const holidayDate = new Date(holiday.start)
-            return holidayDate > now
-          })
-          if (!targetHoliday && holidays.length > 0) {
-            targetHoliday = holidays[0]
-          }
-        } else {
-          targetHoliday = holidays.find(holiday => holiday.name === selectedHoliday)
-        }
+        let targetHoliday = holidays.find(holiday => holiday.name === selectedHoliday)
+        
         if (targetHoliday) {
           setCurrentHoliday(targetHoliday)
           const targetDate = new Date(targetHoliday.start)
@@ -95,14 +101,16 @@ function App() {
 
   const religions = [
     { key: 'jewish', label: 'Jewish', emoji: '✡️' },
+    // CHANGE FOR NOTICE CI WORKS
+ // { key: 'muslim', label: 'DEVOPS', emoji: '☪️' },
     { key: 'muslim', label: 'Muslim', emoji: '☪️' },
     { key: 'christian', label: 'Christian', emoji: '✝️' }
   ]
 
+
   return (
     <div className="app" id="app-root">
       <div className="container" id="main-container">
-        {/* Header with current date */}
         <div className="header" id="header-bar">
           <div className="current-date" id="current-date">
             <div className="date" id="date-string">{formatDate(currentDate)}</div>
@@ -110,7 +118,6 @@ function App() {
           </div>
         </div>
 
-        {/* Religion Selection */}
         <div className="religion-selector" id="religion-selector">
           {religions.map(religion => (
             <button
@@ -120,7 +127,12 @@ function App() {
               data-testid={`religion-btn-${religion.key}`}
               onClick={() => {
                 setSelectedReligion(religion.key)
-                setSelectedHoliday('next')
+                if (holidaysData && holidaysData[religion.key]) {
+                  const nextHoliday = findNextHoliday(holidaysData[religion.key], currentDate)
+                  if (nextHoliday) {
+                    setSelectedHoliday(nextHoliday.name)
+                  }
+                }
               }}
             >
               <span className="emoji" data-testid={`emoji-${religion.key}`}>{religion.emoji}</span>
@@ -129,7 +141,6 @@ function App() {
           ))}
         </div>
 
-        {/* Holiday Selection */}
         <div className="holiday-selector" id="holiday-selector">
           <select
             value={selectedHoliday}
@@ -138,7 +149,6 @@ function App() {
             id="holiday-select"
             data-testid="holiday-select"
           >
-            <option value="next">Next Holiday</option>
             {holidaysData && holidaysData[selectedReligion]?.map((holiday, index) => {
               const holidayDate = new Date(holiday.start);
               const isPast = holidayDate < currentDate;
@@ -158,9 +168,7 @@ function App() {
           </select>
         </div>
 
-        {/* Main Counter */}
         <div className="counter-container" id="counter-container">
-          {/* Stable Circle Component */}
           <div className="circular-progress" id="circular-progress" style={{ width: 200, height: 200 }}>
             <svg width={200} height={200} className="progress-ring" id="progress-ring-svg">
               <circle
@@ -186,10 +194,12 @@ function App() {
                 id="progress-ring"
               />
               <defs>
+
                 <linearGradient id="gradient" gradientTransform="rotate(132.6)">
                   <stop offset="23.3%" stopColor="rgba(71,139,214,1)" />
                   <stop offset="84.7%" stopColor="rgba(37,216,211,1)" />
                 </linearGradient>
+
               </defs>
             </svg>
             <div className="progress-content" id="progress-content">
@@ -212,7 +222,6 @@ function App() {
             </div>
           </div>
 
-          {/* Detailed Countdown */}
           <div className="detailed-countdown" id="detailed-countdown">
             <div className="time-unit time-hours" id="time-unit-hours">
               <span className="number" id="countdown-hours">{timeRemaining.hours}</span>
