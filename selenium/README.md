@@ -1,4 +1,3 @@
-
 # Selenium Test Automation
 
 ## Running the Tests
@@ -26,6 +25,12 @@ Run App:
 npm i
 npm run dev
 ````
+> ⚠️ Edit `selenium/config.json` - to loaclhost:5173
+
+> ⚠️ Edit `executable_path` in the script to match your OS:
+>
+> * macOS: `localServices/chromedriver-mac-x64/chromedriver`
+> * Windows: `localServices/chromedriver-win64/chromedriver.exe`
 
 Run (in new Terminal):
 
@@ -34,10 +39,7 @@ cd selenium
 pytest test.py
 ````
 
-> ⚠️ Edit `executable_path` in the script to match your OS:
->
-> * macOS: `localServices/chromedriver-mac-x64/chromedriver`
-> * Windows: `localServices/chromedriver-win64/chromedriver.exe`
+
 
 Run Verbose - axtra prints
 
@@ -58,11 +60,9 @@ pytest -v testHeadless.py
 
 > No need to set the ChromeDriver path (uses `webdriver_manager`).
 
-
 ------------
 
 ### Git workflow .yaml usage
-
 
 ```yaml
 on:
