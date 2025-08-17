@@ -101,6 +101,11 @@
         port: 22
         timeout: 300
 
+    - name: Wait for cloud-init to finish
+      shell: cloud-init status --wait
+      register: cloudinit_status
+      changed_when: false
+
     - name: Add server to dynamic inventory
       add_host:
         name: "{{ ec2_data.instances[0].public_ip_address }}"
