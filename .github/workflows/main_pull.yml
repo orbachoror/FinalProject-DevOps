@@ -34,10 +34,3 @@ jobs:
           cd selenium
           pytest testHeadless.py -rA
         timeout-minutes: 5
-
-      - name: Stop and cleanup Docker container
-        run: |
-          docker stop app || true
-          docker rm app || true
-          docker rmi myapp || true
-
