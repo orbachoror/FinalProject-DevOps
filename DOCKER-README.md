@@ -1,38 +1,37 @@
-Holidays Counter — Docker Deployment Guide
-קבצים מרכזיים
-Dockerfile: מגדיר בניית Image מבוסס Node 20 Alpine עם הפעלת npm run dev.
+Docker & Deployment Setup:
+This project uses Docker to containerize and deploy a React + Vite application.
+The setup includes full CI/CD with automated testing using GitHub Actions and Selenium.
 
-docker-compose.yml: מושך Image מ־Docker Hub (iyarh/final-devops-app:latest), מגדיר ENV NODE_ENV=prod, וממפה פורט 80 ל־5173.
+Dockerfile Overview:
+The Dockerfile defines a lightweight Node 20 environment and runs the Vite development server inside the container on port 5173.
 
-הרצת הפרויקט
-לפיתוח מקומי (Live Reload)
-לא מיועד ב־compose הנוכחי; להרצה מקומית עם build צריך להגדיר docker-compose.dev.yml עם build: ו־volumes:.
+Docker Compose:
+The docker-compose.yml file is used to run the app in a container and expose it on port 80:
+Maps external port 80 to internal 5173 (where Vite runs).
+This makes the app accessible at http://localhost.
 
-לפרודקשן / בדיקות (עם Image מוכן)
-bash
-Copy
-docker compose up -d
-האתר זמין ב־http://localhost (פורט 80).
+Docker Ignore:
+The .dockerignore file ensures unnecessary files are excluded from the image:
 
-בניית Image ועדכון Docker Hub
-bash
-Copy
-docker build -t iyarh/final-devops-app:latest .
-docker push iyarh/final-devops-app:latest
-ניהול קונטיינרים
-עצירת והרמת שירות:
+node_modules
+dist
+.dockerignore
+Dockerfile
+.env
+.git
+.gitignore
+.vscode
 
-bash
-Copy
-docker compose down
-docker compose up -d
-בדיקת סטטוס ולוגים:
+Integration with CI/CD and Selenium:
+On Pull Requests, GitHub Actions builds the Docker image and runs headless Selenium tests to ensure the app works before allowing merge.
+On push to main, a production-ready Docker image is built and pushed to Docker Hub, and a remote server deploys it automatically via SSH.
+Selenium tests point to http://localhost:80 and expect the app to be running via Docker Compose.
 
-bash
-Copy
-docker ps
-docker logs holidayscounter
-הערות
-ודאו ש־Image מעודכן ב־Docker Hub לפני הרצת Compose בפרודקשן.
+Deployment:
+Deployment is handled via GitHub Actions + Ansible:
+Docker image is built and pushed to Docker Hub.
+A remote EC2 server pulls the latest image and runs it using docker compose up.
+No manual intervention is needed — the process is fully automated.
 
-לפיתוח מומלץ להגדיר Compose נפרד עם build ו־volumes כדי לתמוך ב־live reload.
+Security Notes:
+Secrets (DockerHub credentials, SSH keys) are stored securely in GitHub Secrets.
