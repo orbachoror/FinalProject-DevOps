@@ -30,8 +30,8 @@ function App() {
   useEffect(() => {
     fetch('/holidays2025.json')
     // CODE MISTAKE EXAMPLE - missed parse step
-   // .then(response => response)
-      .then(response => response.json())
+   .then(response => response)
+      // .then(response => response.json())
       .then(data => {
         setHolidaysData(data)
         const now = new Date()
