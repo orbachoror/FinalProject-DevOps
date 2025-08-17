@@ -120,7 +120,7 @@
     - name: Wait until instance is fully ready
       ansible.builtin.wait_for_connection:
         delay: 10
-        timeout: 900
+        timeout: 900 
 
     - name: Install prerequisites
       apt:
