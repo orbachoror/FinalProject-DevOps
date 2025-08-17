@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build Docker image
         run: docker build --tag myapp .   
 
@@ -32,7 +32,7 @@ jobs:
       - name: Run Selenium Tests
         run: |
           cd selenium
-          pytest -v testHeadless.py
+          pytest testHeadless.py -rA
         timeout-minutes: 5
 
       - name: Stop and cleanup Docker container
