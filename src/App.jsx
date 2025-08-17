@@ -30,7 +30,7 @@ function App() {
   useEffect(() => {
     fetch('/holidays2025.json')
     // CODE MISTAKE EXAMPLE - missed parse step
-   // .then(response => response)
+  //  .then(response => response)
       .then(response => response.json())
       .then(data => {
         setHolidaysData(data)
@@ -102,8 +102,8 @@ function App() {
   const religions = [
     { key: 'jewish', label: 'Jewish', emoji: '✡️' },
     // CHANGE FOR NOTICE CI WORKS
- // { key: 'muslim', label: 'DEVOPS', emoji: '☪️' },
-    { key: 'muslim', label: 'Muslim', emoji: '☪️' },
+ { key: 'muslim', label: 'DEVOPS', emoji: '☪️' },
+    // { key: 'muslim', label: 'Muslim', emoji: '☪️' },
     { key: 'christian', label: 'Christian', emoji: '✝️' }
   ]
 
